@@ -25,17 +25,10 @@ https://store-summary.lovable.app/
 ## Screenshots
 ## Screenshots
 
-### Dashboard
-![Dashboard](Screenshot 2026-07-27 011819.png)
-
-### Sales and Expenses
-![Sales and Expenses](Screenshot 2026-07-27 012120.png)
-
-### Reports
-![Reports](Screenshot 2026-07-27 012210.png)
-
-### Application View
-![Application View](Screenshot 2026-07-27 012258.png)
+Screenshot 2026-07-27 011819.png
+Screenshot 2026-07-27 012120.png
+Screenshot 2026-07-27 012210.png
+Screenshot 2026-07-27 012258.png
 
 ## How to Run Locally
 
