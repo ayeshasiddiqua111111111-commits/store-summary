@@ -28,10 +28,10 @@ https://store-summary.lovable.app/
 ![Dashboard](https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20011819.png)
 
 ### Sales and Expenses
-![Sales and Expenses](https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20011819.png)
+![Sales and Expenses](https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20012120.png)
 
 ### Reports
-![Reports](
+![Reports](https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20012210.png)
 
 ### Application View
 ![Application View](https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20012258.png)
