@@ -29,8 +29,8 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Dashboard — ShopTrack" },
       { name: "description", content: "See today's sales, expenses, and profit at a glance." },
-      { property: "og:title", content: "ShopTrack Dashboard" },
-      { property: "og:description", content: "Today's sales, expenses, and profit for your shop." },
+      { property: "og:title", content: "Dashboard — ShopTrack" },
+      { property: "og:description", content: "See today's sales, expenses, and profit at a glance." },
     ],
   }),
   component: Dashboard,
