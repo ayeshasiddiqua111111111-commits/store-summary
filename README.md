@@ -23,12 +23,22 @@ https://store-summary.lovable.app/
 - GitHub
 
 ## Screenshots
-## Screenshots
 
-Screenshot 2026-07-27 011819.png
-Screenshot 2026-07-27 012120.png
-Screenshot 2026-07-27 012210.png
-Screenshot 2026-07-27 012258.png
+### Dashboard
+![Dashboard]
+https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20011819.png
+
+### Sales and Expenses
+![Sales and Expenses]
+https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20011819.png
+
+### Reports
+![Reports]
+https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20011819.png
+
+### Application View
+![Application View]
+https://raw.githubusercontent.com/ayeshasiddiqua111111111-commits/store-summary/dd947117c65ae44b90a54b6aed2c4bdae90eaadd/Screenshot%202026-07-27%20011819.png
 
 ## How to Run Locally
 
