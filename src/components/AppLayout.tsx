@@ -22,7 +22,12 @@ export function AppLayout() {
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Store className="h-5 w-5" />
             </span>
-            <span className="text-lg font-bold tracking-tight">ShopTrack</span>
+            <span className="flex flex-col leading-tight">
+              <span className="text-lg font-bold tracking-tight">Shop Track</span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Sales &amp; Expense Tracker
+              </span>
+            </span>
           </Link>
           <nav className="hidden gap-1 md:flex">
             {nav.map((n) => {
