@@ -14,7 +14,7 @@ Small shop owners often struggle to record daily sales, expenses, and calculate 
 - Easy-to-use interface
 
 ## Live Demo
-Paste your app URL here
+https://store-summary.lovable.app/
 
 ## Technologies Used
 - React
@@ -22,11 +22,47 @@ Paste your app URL here
 - Supabase
 - GitHub
 
-## AI Feature
-AI Business Advisor (to analyze sales and expenses and provide simple business suggestions)
-
 ## Screenshots
-Add screenshots of the application here.
+## Screenshots
 
-## How to Run
-Clone the repository, install dependencies, and run the project locally.
+### Dashboard
+![Dashboard](Screenshot 2026-07-27 011819.png)
+
+### Sales and Expenses
+![Sales and Expenses](Screenshot 2026-07-27 012120.png)
+
+### Reports
+![Reports](Screenshot 2026-07-27 012210.png)
+
+### Application View
+![Application View](Screenshot 2026-07-27 012258.png)
+
+## How to Run Locally
+
+Follow these steps to run the project on your computer:
+
+### 1. Clone the repository
+
+```bash
+git clone YOUR_GITHUB_REPOSITORY_LINK
+```
+
+### 2. Open the project folder
+
+```bash
+cd store-summary
+```
+
+### 3. Install dependencies
+
+```bash
+npm install
+```
+
+### 4. Start the application
+
+```bash
+npm run dev
+```
+
+The application will start running locally in your browser.
