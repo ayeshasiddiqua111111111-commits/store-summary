@@ -1,29 +1,32 @@
-# Welcome to your Lovable project
+# ShopTrack – Sales & Expense Tracker
 
-This project was built with [Lovable](https://lovable.dev).
+## Problem
+Small shop owners often struggle to record daily sales, expenses, and calculate profit. ShopTrack provides a simple solution to manage business records easily.
 
-## Build with Lovable
+## Features
+- Add daily sales records
+- Add daily expenses
+- Automatic profit calculation
+- Daily, weekly, and monthly reports
+- Search records by date
+- Sales and expense charts
+- Simple dashboard for shop owners
+- Easy-to-use interface
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+## Live Demo
+Paste your app URL here
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
-
-## Built with
-
-- TanStack Start
-- TypeScript
+## Technologies Used
 - React
-- Tailwind CSS
+- Lovable
+- Supabase
+- GitHub
+
+## AI Feature
+AI Business Advisor (to analyze sales and expenses and provide simple business suggestions)
+
+## Screenshots
+Add screenshots of the application here.
+
+## How to Run
+Clone the repository, install dependencies, and run the project locally.
