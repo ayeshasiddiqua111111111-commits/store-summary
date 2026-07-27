@@ -1,11 +1,14 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Sale = {
   id: string;
-  date: string; // ISO yyyy-mm-dd
+  date: string;
   item: string;
   quantity: number;
-  price: number; // unit price
+  price: number;
   total: number;
   notes?: string;
   createdAt: number;
@@ -39,24 +42,6 @@ export type Expense = {
   createdAt: number;
 };
 
-const SALES_KEY = "shoptrack.sales.v1";
-const EXPENSES_KEY = "shoptrack.expenses.v1";
-
-function read<T>(key: string): T[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function write<T>(key: string, value: T[]) {
-  window.localStorage.setItem(key, JSON.stringify(value));
-  window.dispatchEvent(new CustomEvent("shoptrack:update", { detail: { key } }));
-}
-
 export function uid() {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
@@ -68,63 +53,190 @@ export function todayISO() {
   return local.toISOString().slice(0, 10);
 }
 
-function useLocalCollection<T>(key: string) {
-  const [items, setItems] = useState<T[]>(() => read<T>(key));
+type SaleRow = {
+  id: string;
+  date: string;
+  item: string;
+  quantity: number | string;
+  price: number | string;
+  total: number | string;
+  notes: string | null;
+  created_at: string;
+};
 
-  useEffect(() => {
-    const sync = () => setItems(read<T>(key));
-    window.addEventListener("shoptrack:update", sync as EventListener);
-    window.addEventListener("storage", sync);
-    // ensure hydration
-    sync();
-    return () => {
-      window.removeEventListener("shoptrack:update", sync as EventListener);
-      window.removeEventListener("storage", sync);
-    };
-  }, [key]);
+type ExpenseRow = {
+  id: string;
+  date: string;
+  category: string;
+  amount: number | string;
+  notes: string | null;
+  created_at: string;
+};
 
-  const add = useCallback(
-    (item: T) => {
-      const current = read<T>(key);
-      write(key, [item, ...current]);
+const mapSale = (r: SaleRow): Sale => ({
+  id: r.id,
+  date: r.date,
+  item: r.item,
+  quantity: Number(r.quantity),
+  price: Number(r.price),
+  total: Number(r.total),
+  notes: r.notes ?? undefined,
+  createdAt: new Date(r.created_at).getTime(),
+});
+
+const mapExpense = (r: ExpenseRow): Expense => ({
+  id: r.id,
+  date: r.date,
+  category: r.category as ExpenseCategory,
+  amount: Number(r.amount),
+  notes: r.notes ?? undefined,
+  createdAt: new Date(r.created_at).getTime(),
+});
+
+export function useSales() {
+  const qc = useQueryClient();
+  const { data: items = [] } = useQuery({
+    queryKey: ["sales"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sales" as never)
+        .select("*")
+        .order("date", { ascending: false })
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return ((data ?? []) as unknown as SaleRow[]).map(mapSale);
     },
-    [key],
-  );
+  });
 
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["sales"] });
+
+  const addMut = useMutation({
+    mutationFn: async (s: Sale) => {
+      const { error } = await supabase.from("sales" as never).insert({
+        date: s.date,
+        item: s.item,
+        quantity: s.quantity,
+        price: s.price,
+        total: s.total,
+        notes: s.notes ?? null,
+      } as never);
+      if (error) throw error;
+    },
+    onSuccess: invalidate,
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const updateMut = useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Sale> }) => {
+      const { error } = await supabase
+        .from("sales" as never)
+        .update({
+          ...(patch.date !== undefined && { date: patch.date }),
+          ...(patch.item !== undefined && { item: patch.item }),
+          ...(patch.quantity !== undefined && { quantity: patch.quantity }),
+          ...(patch.price !== undefined && { price: patch.price }),
+          ...(patch.total !== undefined && { total: patch.total }),
+          ...(patch.notes !== undefined && { notes: patch.notes ?? null }),
+        } as never)
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: invalidate,
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const removeMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("sales" as never).delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: invalidate,
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const add = useCallback((s: Sale) => addMut.mutate(s), [addMut]);
   const update = useCallback(
-    (id: string, patch: Partial<T>) => {
-      const current = read<T & { id: string }>(key);
-      write(
-        key,
-        current.map((it) => (it.id === id ? { ...it, ...patch } : it)),
-      );
-    },
-    [key],
+    (id: string, patch: Partial<Sale>) => updateMut.mutate({ id, patch }),
+    [updateMut],
   );
-
-  const remove = useCallback(
-    (id: string) => {
-      const current = read<T & { id: string }>(key);
-      write(
-        key,
-        current.filter((it) => it.id !== id),
-      );
-    },
-    [key],
-  );
+  const remove = useCallback((id: string) => removeMut.mutate(id), [removeMut]);
 
   return { items, add, update, remove };
 }
 
-export const useSales = () => useLocalCollection<Sale>(SALES_KEY);
-export const useExpenses = () => useLocalCollection<Expense>(EXPENSES_KEY);
+export function useExpenses() {
+  const qc = useQueryClient();
+  const { data: items = [] } = useQuery({
+    queryKey: ["expenses"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("expenses" as never)
+        .select("*")
+        .order("date", { ascending: false })
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return ((data ?? []) as unknown as ExpenseRow[]).map(mapExpense);
+    },
+  });
+
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["expenses"] });
+
+  const addMut = useMutation({
+    mutationFn: async (e: Expense) => {
+      const { error } = await supabase.from("expenses" as never).insert({
+        date: e.date,
+        category: e.category,
+        amount: e.amount,
+        notes: e.notes ?? null,
+      } as never);
+      if (error) throw error;
+    },
+    onSuccess: invalidate,
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const updateMut = useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Expense> }) => {
+      const { error } = await supabase
+        .from("expenses" as never)
+        .update({
+          ...(patch.date !== undefined && { date: patch.date }),
+          ...(patch.category !== undefined && { category: patch.category }),
+          ...(patch.amount !== undefined && { amount: patch.amount }),
+          ...(patch.notes !== undefined && { notes: patch.notes ?? null }),
+        } as never)
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: invalidate,
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const removeMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("expenses" as never).delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: invalidate,
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const add = useCallback((e: Expense) => addMut.mutate(e), [addMut]);
+  const update = useCallback(
+    (id: string, patch: Partial<Expense>) => updateMut.mutate({ id, patch }),
+    [updateMut],
+  );
+  const remove = useCallback((id: string) => removeMut.mutate(id), [removeMut]);
+
+  return { items, add, update, remove };
+}
 
 export function formatMoney(n: number) {
-  return new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: "USD",
+  const value = new Intl.NumberFormat("en-PK", {
     maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
   }).format(n || 0);
+  return `Rs ${value}`;
 }
 
 export function inRange(dateISO: string, from?: string, to?: string) {
@@ -135,8 +247,8 @@ export function inRange(dateISO: string, from?: string, to?: string) {
 
 export function startOfWeekISO(base = new Date()) {
   const d = new Date(base);
-  const day = d.getDay(); // 0 Sun
-  const diff = (day + 6) % 7; // week starts Monday
+  const day = d.getDay();
+  const diff = (day + 6) % 7;
   d.setDate(d.getDate() - diff);
   const off = d.getTimezoneOffset();
   return new Date(d.getTime() - off * 60_000).toISOString().slice(0, 10);
